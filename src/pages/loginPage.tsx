@@ -22,6 +22,7 @@ const LoginPage = () => {
         localStorage.setItem("email", response.data[0]["email"]);
       })
       .catch((error) => toast.error(error.response.data));
+    window.location.href = "/home";
   };
 
   const register = async (e: any) => {
@@ -35,8 +36,8 @@ const LoginPage = () => {
       .then(async (response) => {
         // Simulate token
         localStorage.setItem("email", response.data[0]["email"]);
-       const userId = response.data[0]["_id"];
-       console.log(userId)
+        const userId = response.data[0]["_id"];
+        console.log(userId);
         await axios
           .post(`${process.env.REACT_APP_API_URL}/portfolios`, {
             userId,
@@ -50,6 +51,7 @@ const LoginPage = () => {
           .catch((error) => toast.error(error.response.data));
       })
       .catch((error) => toast.error(error.response.data));
+    window.location.href = "/home";
   };
 
   const registerForm = (
