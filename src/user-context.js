@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const UserContext = createContext({
   user: null,
@@ -34,7 +35,7 @@ export function UserContextProvider(props) {
         );
         setCurrentPortfolio(portfolio.data[0]);
       } catch (error) {
-        console.log(error.respons?.data);
+        toast.error(error.respons?.data);
       }
     }
 

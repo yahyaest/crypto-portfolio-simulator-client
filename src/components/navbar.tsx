@@ -1,7 +1,6 @@
 import React from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
 
-
 const NavbarComponent = () => {
   const token = localStorage.getItem("email");
 
@@ -10,7 +9,7 @@ const NavbarComponent = () => {
     window.location.reload();
   };
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="light" expand="lg" fixed="top">
       <Container>
         <Navbar.Brand href="/home">
           <img

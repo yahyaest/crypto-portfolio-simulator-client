@@ -141,7 +141,7 @@ const LoginPage = () => {
 
   if (localStorage.getItem("email")) history.push("/home");
 
-  return <div>{isLogin ? loginForm : registerForm}</div>;
+  return <div className="top-margin">{isLogin ? loginForm : registerForm}</div>;
 };
 
 export default LoginPage;

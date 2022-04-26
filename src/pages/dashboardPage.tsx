@@ -109,12 +109,17 @@ const DashboardPage = () => {
 
   if (!localStorage.getItem("email")) history.push("/login");
 
-
   if (portfolioTransactions.length === 0)
-    return <h1 className="text-center my-5">No Transaction are made yet</h1>;
+    return (
+      <div className=" top-margin">
+        <h1 className=" top-margin text-center my-5">
+          No Transaction are made yet
+        </h1>
+      </div>
+    );
 
   return (
-    <div className="mx-5">
+    <div className="top-margin mx-2">
       <h1 className="text-center my-5">
         {(userCtx.user as any).username} DashboardPage
       </h1>

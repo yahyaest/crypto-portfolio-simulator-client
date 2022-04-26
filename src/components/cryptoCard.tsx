@@ -85,7 +85,7 @@ const CryptoCard = (props: any) => {
           <input
             className="mx-2"
             type="number"
-            placeholder="number of shares to buy"
+            placeholder="number to buy"
             onChange={(e) => setShares(+e.currentTarget.value)}
           />
           <button onClick={buyCrypto} className="btn btn-primary">

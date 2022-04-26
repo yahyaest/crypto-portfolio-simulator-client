@@ -34,7 +34,7 @@ const CryptoPage = () => {
     return <Spinner className="spinner" animation="border" variant="danger" />;
 
   return (
-    <div>
+    <div className="top-margin">
       <h1 className="text-center my-4"> Top 100 Crypto Currencies</h1>
       <div className="cards">
         {coins?.map((coin: any, index: number) => (
