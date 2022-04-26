@@ -4,9 +4,6 @@ import axios from "axios";
 const UserContext = createContext({
   user: null,
   portfolio: null,
-  //  getTransaction: function (userData, favAnime) {},
-  //  buyCrypto: function (userData, favAnime) {},
-  // sellCrypto: function (userData, favAnime) {},
 });
 
 export function UserContextProvider(props) {
