@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import millify from "millify";
 import CryptoCard from "../components/cryptoCard";
+import { Spinner } from "react-bootstrap";
 
 const CryptoPage = () => {
   const [coins, setCoins] = useState<any>({});
@@ -26,12 +26,12 @@ const CryptoPage = () => {
     fetchData();
   }, []);
 
-  if (isFetching) return <p>Loading...</p>;
+  if (isFetching) return <Spinner className="spinner" animation="border" variant="danger" />;
 
   console.log(coins);
   return (
     <div>
-      CryptoPage
+      <h1 className="text-center my-4"> Top 100 Crypto Currencies</h1>
       <div className="cards">
         {coins?.map((coin: any) => (
           <CryptoCard coin={coin}></CryptoCard>
