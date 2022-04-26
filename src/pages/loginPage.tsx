@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const LoginPage = () => {
@@ -10,48 +11,55 @@ const LoginPage = () => {
   const [portfolioValue, setPortfolioValue] = useState(0);
   const [isLogin, setIsLogin] = useState(true);
 
+  const history = useHistory();
+
   const login = async (e: any) => {
     e.preventDefault();
-    await axios
-      .post(`${process.env.REACT_APP_API_URL}/users/login`, {
-        email,
-        password,
-      })
-      .then((response) => {
-        // Simulate token
-        localStorage.setItem("email", response.data[0]["email"]);
-      })
-      .catch((error) => toast.error(error.response.data));
-    window.location.href = "/home";
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/users/login`,
+        {
+          email,
+          password,
+        }
+      );
+
+      localStorage.setItem("email", response.data[0]["email"]);
+      window.location.href = "/home";
+    } catch (error: any) {
+      toast.error(error.response.data);
+    }
   };
 
   const register = async (e: any) => {
     e.preventDefault();
-    await axios
-      .post(`${process.env.REACT_APP_API_URL}/users`, {
+    try {
+      // Add New user
+      const user = await axios.post(`${process.env.REACT_APP_API_URL}/users`, {
         username,
         email,
         password,
-      })
-      .then(async (response) => {
-        // Simulate token
-        localStorage.setItem("email", response.data[0]["email"]);
-        const userId = response.data[0]["_id"];
-        console.log(userId);
-        await axios
-          .post(`${process.env.REACT_APP_API_URL}/portfolios`, {
-            userId,
-            value: portfolioValue,
-            transactions: [],
-          })
-          .then((response) => {
-            // Simulate token
-            localStorage.setItem("email", response.data[0]["email"]);
-          })
-          .catch((error) => toast.error(error.response.data));
-      })
-      .catch((error) => toast.error(error.response.data));
-    window.location.href = "/home";
+      });
+
+      // Create user related portfolio
+      console.log(user.data)
+      const userId = user.data["_id"];
+
+      const portfolio = await axios.post(
+        `${process.env.REACT_APP_API_URL}/portfolios`,
+        {
+          userId,
+          value: portfolioValue,
+          transactions: [],
+        }
+      );
+
+      // Simulate token
+      localStorage.setItem("email", user.data["email"]);
+      window.location.href = "/home";
+    } catch (error: any) {
+      toast.error(error.response.data);
+    }
   };
 
   const registerForm = (
@@ -130,6 +138,9 @@ const LoginPage = () => {
       </Button>
     </Form>
   );
+
+  if (localStorage.getItem("email")) history.push("/home");
+
   return <div>{isLogin ? loginForm : registerForm}</div>;
 };
 

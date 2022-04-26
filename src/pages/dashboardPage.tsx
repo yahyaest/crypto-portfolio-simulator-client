@@ -2,16 +2,19 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import { Spinner, Table } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import TransactionsTable from "../components/transactionsTable";
 import UserContext from "../user-context";
 
 const DashboardPage = () => {
   const [currentPortfolio, setCurrentPortfolio] = useState<any>({});
-  const [portfolioTransactions, setPortfolioTransactions] = useState<any[]>([]);
+  const [portfolioTransactions, setPortfolioTransactions] = useState<any>([]);
   const [currentPrice, setCurrentPrice] = useState<number[]>([]);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
   const userCtx = useContext(UserContext);
+  const history = useHistory();
 
   const reduceNemberLength = (number: number) => {
     return number.toString().slice(0, 7);
@@ -45,6 +48,7 @@ const DashboardPage = () => {
       }
     }
     setCurrentPortfolio(userCtx.portfolio as any);
+
     fetchPortfolioTransactions();
   }, [userCtx]);
 
@@ -95,59 +99,46 @@ const DashboardPage = () => {
         }
       );
       toast.success("Crypto shares are selled successfully");
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error: any) {
       toast.error(error.response.data);
     }
   };
 
-    if (portfolioTransactions.length === 0)
-      return (
-        <Spinner className="spinner" animation="border" variant="danger" />
-      );
+  if (!localStorage.getItem("email")) history.push("/login");
 
+
+  if (portfolioTransactions.length === 0)
+    return <h1 className="text-center my-5">No Transaction are made yet</h1>;
 
   return (
-    <div>
-      <h1 className="text-center my-2">
+    <div className="mx-5">
+      <h1 className="text-center my-5">
         {(userCtx.user as any).username} DashboardPage
       </h1>
-      <button onClick={getSharesCurrentPrices} className="btn btn-primary m-2">
+      <div className="portfolio-info text-center my-5">
+        <p>
+          <strong>Intial Portfolio Value</strong> :
+          {currentPortfolio.intialValue} $
+        </p>
+        <p>
+          <strong>Current Portfolio Value</strong> :
+          {currentPortfolio.currentValue.toString().slice(0, 10)} $
+        </p>
+      </div>
+      <h4>List of not selled shares</h4>
+      <button onClick={getSharesCurrentPrices} className="btn btn-primary m-3">
         Get Current Prices
       </button>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Crypto</th>
-            <th>Shares</th>
-            <th>Bought At</th>
-            <th>Current Price</th>
-            <th>Sell</th>
-          </tr>
-        </thead>
-        <tbody>
-          {portfolioTransactions.map((transaction: any, index: number) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{transaction.cryptoName}</td>
-              <td>{transaction.cryptoShares}</td>
-              <td>{transaction.cryptoPrice.toString().slice(0, 7)}</td>
-              <td>{currentPrice[index]}</td>
-              <td>
-                <button
-                  onClick={() =>
-                    sellCryptoShares(transaction, currentPrice[index])
-                  }
-                  className="btn btn-primary btn-sm"
-                  disabled={isDisabled}
-                >
-                  Sell
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+
+      <TransactionsTable
+        portfolioTransactions={portfolioTransactions}
+        currentPrice={currentPrice}
+        sellCryptoShares={sellCryptoShares}
+        isDisabled={isDisabled}
+      />
     </div>
   );
 };

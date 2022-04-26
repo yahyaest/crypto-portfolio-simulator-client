@@ -8,27 +8,34 @@ const UserContext = createContext({
 
 export function UserContextProvider(props) {
   const [currentUser, setCurrentUser] = useState({});
-  const [currentortfolio, setCurrentortfolio] = useState({});
+  const [currentPortfolio, setCurrentPortfolio] = useState({});
 
   useEffect(() => {
     async function fetchData() {
       let email = localStorage.getItem("email");
-      await axios
-        .post(`${process.env.REACT_APP_API_URL}/users/current-user`, { email })
-        .then(async (response) => {
-          setCurrentUser(response.data[0]);
-          const userId = response.data[0]["_id"];
-          await axios
-            .post(
-              `${process.env.REACT_APP_API_URL}/portfolios/current-portfolio`,
-              {
-                userId
-              }
-            )
-            .then((response) => setCurrentortfolio(response.data[0]))
-            .catch((error) => console.log(error.response?.data));
-        })
-        .catch((error) => console.log(error.respons?.data));
+
+      try {
+        // Get current User
+        const user = await axios.post(
+          `${process.env.REACT_APP_API_URL}/users/current-user`,
+          {
+            email,
+          }
+        );
+
+        setCurrentUser(user.data[0]);
+        // Get current portfolio
+        const userId = user.data[0]["_id"];
+        const portfolio = await axios.post(
+          `${process.env.REACT_APP_API_URL}/portfolios/current-portfolio`,
+          {
+            userId,
+          }
+        );
+        setCurrentPortfolio(portfolio.data[0]);
+      } catch (error) {
+        console.log(error.respons?.data);
+      }
     }
 
     fetchData();
@@ -36,7 +43,7 @@ export function UserContextProvider(props) {
 
   const context = {
     user: currentUser,
-    portfolio: currentortfolio,
+    portfolio: currentPortfolio,
   };
 
   return (
