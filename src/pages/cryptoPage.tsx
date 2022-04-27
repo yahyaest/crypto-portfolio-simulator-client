@@ -28,7 +28,6 @@ const CryptoPage = () => {
     fetchData();
   }, []);
 
-  if (!localStorage.getItem("email")) history.push("/login");
 
   if (isFetching)
     return <Spinner className="spinner" animation="border" variant="danger" />;

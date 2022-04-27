@@ -9,7 +9,7 @@ import UserContext from "../user-context";
 
 const DashboardPage = () => {
   const [currentPortfolio, setCurrentPortfolio] = useState<any>({});
-  const [portfolioTransactions, setPortfolioTransactions] = useState<any>([]);
+  const [portfolioTransactions, setPortfolioTransactions] = useState<any>("");
   const [currentPrice, setCurrentPrice] = useState<number[]>([]);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
@@ -109,9 +109,17 @@ const DashboardPage = () => {
 
   if (!localStorage.getItem("email")) history.push("/login");
 
+    if (!portfolioTransactions)
+      return (
+        <Spinner className="spinner" animation="border" variant="danger" />
+      );
+
   if (portfolioTransactions.length === 0)
     return (
       <div className=" top-margin">
+        <h1 className="text-center my-5">
+          {(userCtx.user as any).username} DashboardPage
+        </h1>
         <h1 className=" top-margin text-center my-5">
           No Transaction are made yet
         </h1>
